@@ -9,3 +9,13 @@ nodes through actions.
 
 There will be more examples to come, but this is meant as a library to solve a
 piece of the puzzle, which will be used with others to create a Tree UI control
+
+# Useful commands
+    npm install elm -g
+    npm install elm-test -g
+    elm-test TestRunner.elm -c elm-make.cmd
+
+The commands do the following:
+* Install elm (version 0.16 is what I'm using)
+* Install elm-test
+* Run elm-test pointing at elm-make.cmd instead of just elm-make because it doesn't work for windows.
