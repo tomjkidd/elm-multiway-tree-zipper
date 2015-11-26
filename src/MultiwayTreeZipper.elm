@@ -28,9 +28,9 @@ import MultiwayTree exposing (Tree (..), Forest, children)
 
 
 {-| The necessary information needed to reconstruct a MultiwayTree as it is
-navigated with a Zipper. This context include the datum that was at the previous
-node, a list of children that came before the node, and a list of children that
-came after the node.
+navigated with a Zipper. This context includes the datum that was at the
+previous node, a list of children that came before the node, and a list of
+children that came after the node.
 -}
 type Context a = Context a (List (Tree a)) (List (Tree a))
 
@@ -47,6 +47,7 @@ type alias Breadcrumbs a = List (Context a)
 allow us to continue navigation through the rest of the tree.
 -}
 type alias Zipper a = (Tree a, Breadcrumbs a)
+
 
 {-| Separate a list into three groups. This function is unique to MultiwayTree
 needs. In order to navigate to children of any Tree, a way to break the children
@@ -143,22 +144,70 @@ goToRoot (tree, breadcrumbs) =
         [] -> Just (tree, breadcrumbs)
         otherwise -> goUp (tree, breadcrumbs) `Maybe.andThen` goToRoot
 
+
+{-| Update the datum at the current Zipper focus. This allows changes to be made
+to a part of a node's datum information, given the previous state of the node.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b"
+                [ Tree "e" [] ]
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 0
+        &> updateDatum (\old -> old ++ "X") -- Appends an X to "b"
+        &> goToRoot
+-}
 updateDatum : (a -> a) -> Zipper a -> Maybe (Zipper a)
 updateDatum fn (Tree datum children, breadcrumbs) =
     Just (Tree (fn datum) children, breadcrumbs)
 
+
+{-| Replace the datum at the current Zipper focus. This allows complete
+replacement of a node's datum information, ignoring the previous state of the
+node.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b"
+                [ Tree "e" [] ]
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 0
+        &> replaceDatum "X" -- Replaces "b" with "X"
+        &> goToRoot
+-}
 replaceDatum : a -> Zipper a -> Maybe (Zipper a)
 replaceDatum newDatum =
     updateDatum (\_ -> newDatum)
 
+
+{-| Fully replace the children at the current Zipper focus.
+-}
 updateChildren : Forest a -> Zipper a -> Zipper a
 updateChildren newChildren (Tree datum children, breadcrumbs) =
     (Tree datum newChildren, breadcrumbs)
 
+
+{-| Access the datum at the current Zipper focus.
+-}
 datum : Zipper a -> a
 datum (tree, breadcrumbs) =
     MultiwayTree.datum tree
 
+
+{-| Access the datum at the current Zipper focus as a Maybe.
+-}
 maybeDatum : Zipper a -> Maybe a
 maybeDatum zipper =
     datum zipper
