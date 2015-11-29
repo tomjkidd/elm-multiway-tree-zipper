@@ -10,6 +10,19 @@ module MultiwayTreeZipper
 the tree must have the same type. The trees are implemented in a Huet
 Zipper fashion.
 
+# Types
+@docs Context, Breadcrumbs, Zipper
+
+# Navigation API
+@docs goToChild, goUp, goToRoot
+
+# Update API
+@docs updateDatum, replaceDatum
+
+# Access API
+@docs datum, maybeDatum
+
+
 # References
 [The Zipper, Gerard Huet](https://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf)
 [Learn You A Haskell, Zippers, Miran Lipovaca](http://learnyouahaskell.com/zippers)

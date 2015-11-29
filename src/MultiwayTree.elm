@@ -6,6 +6,16 @@ module MultiwayTree
 
 {-| A library for constructing multi-way trees. Each Tree carries two pieces of
 information, it's datum and children.
+
+
+# Types
+@docs Tree, Forest
+
+# Operations
+@docs datum, children
+-}
+
+{-| A type to keep track of datum and children.
 -}
 type Tree a = Tree a (Forest a)
 
