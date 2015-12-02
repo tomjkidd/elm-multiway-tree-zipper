@@ -1,6 +1,7 @@
 module MultiwayTree
     ( Tree (..), Forest
     , datum, children
+    , map
     )
     where
 
@@ -13,6 +14,9 @@ information, it's datum and children.
 
 # Operations
 @docs datum, children
+
+# Mapping
+@docs map
 -}
 
 {-| A type to keep track of datum and children.
@@ -35,3 +39,13 @@ datum (Tree datum children) = datum
 -}
 children : Tree a -> Forest a
 children (Tree datum children) = children
+
+
+{-| Map over the MultiwayTree
+-}
+map : (a -> b) -> Tree a -> Tree b
+map fn (Tree datum children) =
+    let mappedDatum = fn datum
+        mappedChildren = List.map (\child -> map fn child) children
+    in
+        (Tree mappedDatum mappedChildren)
