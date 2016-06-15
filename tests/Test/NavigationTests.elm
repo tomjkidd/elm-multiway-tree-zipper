@@ -1,4 +1,4 @@
-module Test.NavigationTests where
+module Test.NavigationTests exposing (..)
 
 import ElmTest exposing (..)
 

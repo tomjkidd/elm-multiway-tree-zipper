@@ -1,4 +1,4 @@
-module Test.MultiwayTreeZipper (tests) where
+module Test.MultiwayTreeZipper exposing (tests)
 
 import ElmTest exposing (..)
 

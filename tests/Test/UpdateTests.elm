@@ -1,4 +1,4 @@
-module Test.UpdateTests where
+module Test.UpdateTests exposing (..)
 
 import ElmTest exposing (..)
 

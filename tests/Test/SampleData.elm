@@ -1,4 +1,4 @@
-module Test.SampleData where
+module Test.SampleData exposing (..)
 
 import MultiwayTree exposing (Tree (..))
 
