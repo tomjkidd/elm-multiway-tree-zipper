@@ -12,9 +12,10 @@ There will be more examples to come, but this is meant as a library to solve a
 piece of the puzzle, which will be used with others to create a Tree UI control
 
 # Run tests (from a cloned repo)
-    npm install elm -g
-    npm install elm-test -g
+    npm install -g elm
     cd tests
-    elm-test Tests.elm
+    elm-package install -y
+    elm-test Tests.elm --output tests.js
+    node tests.js
     
 NOTE: elm-test Tests.elm -c elm-make.cmd might have to be used if running on Windows.
