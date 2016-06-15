@@ -1,4 +1,12 @@
+# Important
+
+The src files have been updated to use elm-version 0.17
+
+I am in the process of migrating the tests from elm-version 0.16 to 0.17, so
+they are not in a working state for 0.17.
+
 # MultiwayTreeZipper
+
 This library was created with the goal of allowing a multiway tree to be
 navigated and updated.
 
@@ -16,6 +24,6 @@ piece of the puzzle, which will be used with others to create a Tree UI control
     elm-test TestRunner.elm -c elm-make.cmd
 
 The commands do the following:
-* Install elm (version 0.16 is what I'm using)
+* Install elm
 * Install elm-test
 * Run elm-test pointing at elm-make.cmd instead of just elm-make because it doesn't work for windows.
