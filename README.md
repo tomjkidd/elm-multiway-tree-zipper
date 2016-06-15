@@ -15,7 +15,7 @@ piece of the puzzle, which will be used with others to create a Tree UI control
     npm install -g elm
     cd tests
     elm-package install -y
-    elm-test Tests.elm --output tests.js
+    elm-make Tests.elm --output tests.js
     node tests.js
     
 NOTE: elm-test Tests.elm -c elm-make.cmd might have to be used if running on Windows.
