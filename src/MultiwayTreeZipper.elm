@@ -1,9 +1,9 @@
-module MultiwayTreeZipper
+module MultiwayTreeZipper exposing
     ( Context (..), Breadcrumbs, Zipper
     , goToChild, goUp, goToRoot
     , updateDatum, replaceDatum
     , datum, maybeDatum
-    ) where
+    )
 -- TODO: Add more documentation
 
 {-| A library for navigating and updating immutable trees. The elements in
@@ -34,7 +34,6 @@ Wanted the first version to be self contained.
 -}
 
 import List
-import Graphics.Element exposing (show)
 import Maybe exposing (Maybe (..))
 
 import MultiwayTree exposing (Tree (..), Forest, children)

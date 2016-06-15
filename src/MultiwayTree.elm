@@ -1,9 +1,8 @@
-module MultiwayTree
+module MultiwayTree exposing
     ( Tree (..), Forest
     , datum, children
     , map
     )
-    where
 
 {-| A library for constructing multi-way trees. Each Tree carries two pieces of
 information, it's datum and children.
