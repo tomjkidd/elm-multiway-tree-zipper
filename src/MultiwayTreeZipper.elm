@@ -21,7 +21,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goUp, goToRoot
+@docs goToChild, goUp, goToRoot, goRight
 
 # Update API
 @docs updateDatum, replaceDatum

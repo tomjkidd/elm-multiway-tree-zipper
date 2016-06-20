@@ -18,7 +18,7 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children
+@docs datum, children, foldl, foldr, flatten
 
 # Mapping
 @docs map
