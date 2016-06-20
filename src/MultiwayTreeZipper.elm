@@ -5,6 +5,7 @@ module MultiwayTreeZipper
         , Zipper
         , goToChild
         , goUp
+        , goRight
         , goToRoot
         , updateDatum
         , replaceDatum
@@ -151,9 +152,42 @@ goToChild n ( Tree datum children, breadcrumbs ) =
             splitOnIndex n children
     in
         case maybeSplit of
-            Nothing -> Nothing
-            Just (before, focus, after) ->
-                Just (focus, (Context datum before after) :: breadcrumbs )
+            Nothing ->
+                Nothing
+
+            Just ( before, focus, after ) ->
+                Just ( focus, (Context datum before after) :: breadcrumbs )
+
+
+{-| Move right relative to the current Zipper focus. This allows navigation from
+a child to it's next sibling.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 1
+        &> goRight
+-}
+goRight : Zipper a -> Maybe (Zipper a)
+goRight ( tree, breadcrumbs ) =
+    case breadcrumbs of
+        (Context datum before after) :: bs ->
+            case after of
+                [] ->
+                    Nothing
+
+                (Tree nextDatum nextChildren) :: rest ->
+                    Just ( (Tree nextDatum nextChildren), (Context datum (before ++ [ tree ]) rest) :: bs )
+
+        [] ->
+            Nothing
 
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
