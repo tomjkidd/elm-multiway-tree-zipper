@@ -115,7 +115,7 @@ tests =
                     &> goRight
                 )
         , test "Navigate to next child on Tree with just one node"
-            <| assertEqual (Just ( noChildTree, [] ))
+            <| assertEqual Nothing
                 (Just ( noChildTree, [] )
                     &> goToNext
                 )
@@ -140,14 +140,10 @@ tests =
                     &> goToChild 0
                     &> goToNext
                 )
-        , test "Navigating to the end of a Tree will keep the last node selected"
-            <| assertEqual
+        , test "Navigating past the end of a Tree will return Nothing"
+            <| assertEqual Nothing
                 (Just ( deepTree, [] )
-                    &> goToChild 0
-                    &> goToChild 0
-                    &> goToChild 0
-                )
-                (Just ( deepTree, [] )
+                    &> goToNext
                     &> goToNext
                     &> goToNext
                     &> goToNext

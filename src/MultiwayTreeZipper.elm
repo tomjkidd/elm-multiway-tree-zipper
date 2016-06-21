@@ -235,7 +235,7 @@ goToNext zipper =
                     Nothing ->
                         case upAndOver zipper of
                             Nothing ->
-                                Just zipper
+                                Nothing
 
                             zipper' ->
                                 zipper'
