@@ -3,7 +3,7 @@ module Test.NavigationTests exposing (..)
 import ElmTest exposing (..)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
-import Test.SampleData exposing (singleChildTree, multiChildTree, deepTree, noChildTree)
+import Test.SampleData exposing (singleChildTree, multiChildTree, deepTree, noChildTree, interestingTree)
 
 
 (&>) =
@@ -113,5 +113,60 @@ tests =
                 (Just ( multiChildTree, [] )
                     &> goToChild 2
                     &> goRight
+                )
+        , test "Navigate to next child on Tree with just one node"
+            <| assertEqual (Just ( noChildTree, [] ))
+                (Just ( noChildTree, [] )
+                    &> goToNext
+                )
+        , test "Navigate to next child on an interesting tree will select the next node"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                    &> goToChild 0
+                )
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                    &> goToNext
+                )
+        , test "Navigate to next child when the end of a branch has been reached will perform backtracking until the next node down can be reached"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 1
+                )
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                    &> goToChild 0
+                    &> goToChild 0
+                    &> goToNext
+                )
+        , test "Navigating to the end of a Tree will keep the last node selected"
+            <| assertEqual
+                (Just ( deepTree, [] )
+                    &> goToChild 0
+                    &> goToChild 0
+                    &> goToChild 0
+                )
+                (Just ( deepTree, [] )
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                )
+        , test "Consecutive goToNext on an interestingTree end up on the right Node"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 2
+                    &> goToChild 1
+                )
+                (Just ( interestingTree, [] )
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
+                    &> goToNext
                 )
         ]

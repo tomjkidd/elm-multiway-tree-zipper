@@ -7,6 +7,7 @@ module MultiwayTreeZipper
         , goUp
         , goRight
         , goToRoot
+        , goToNext
         , updateDatum
         , replaceDatum
         , datum
@@ -188,6 +189,56 @@ goRight ( tree, breadcrumbs ) =
 
         [] ->
             Nothing
+
+
+{-| Moves to the next node in the hierarchy, depth-first. If already
+  at the end, stays there.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToNext
+        &> goToNext
+-}
+goToNext : Zipper a -> Maybe (Zipper a)
+goToNext zipper =
+    let
+        upAndOver zipper =
+            case goUp zipper of
+                Nothing ->
+                    Nothing
+
+                Just zipper' ->
+                    case goRight zipper' of
+                        Nothing ->
+                            upAndOver zipper'
+
+                        zipper'' ->
+                            zipper''
+    in
+        case goToChild 0 zipper of
+            Just zipper' ->
+                Just zipper'
+
+            Nothing ->
+                case goRight zipper of
+                    Just zipper' ->
+                        Just zipper'
+
+                    Nothing ->
+                        case upAndOver zipper of
+                            Nothing ->
+                                Just zipper
+
+                            zipper' ->
+                                zipper'
 
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
