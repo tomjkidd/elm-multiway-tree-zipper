@@ -5,8 +5,10 @@ module MultiwayTreeZipper
         , Zipper
         , goToChild
         , goUp
+        , goLeft
         , goRight
         , goToRoot
+        , goToNext
         , updateDatum
         , replaceDatum
         , datum
@@ -159,6 +161,37 @@ goToChild n ( Tree datum children, breadcrumbs ) =
                 Just ( focus, (Context datum before after) :: breadcrumbs )
 
 
+{-| Move left relative to the current Zipper focus. This allows navigation from
+a child to it's previous sibling.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 1
+        &> goLeft
+-}
+goLeft : Zipper a -> Maybe (Zipper a)
+goLeft ( tree, breadcrumbs ) =
+    case breadcrumbs of
+        [] ->
+            Nothing
+
+        (Context datum before after) :: bs ->
+            case List.reverse before of
+                [] ->
+                    Nothing
+
+                tree' :: rest ->
+                    Just ( tree', (Context datum (List.reverse rest) (tree :: after)) :: bs )
+
+
 {-| Move right relative to the current Zipper focus. This allows navigation from
 a child to it's next sibling.
 
@@ -188,6 +221,56 @@ goRight ( tree, breadcrumbs ) =
 
         [] ->
             Nothing
+
+
+{-| Moves to the next node in the hierarchy, depth-first. If already
+  at the end, stays there.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToNext
+        &> goToNext
+-}
+goToNext : Zipper a -> Maybe (Zipper a)
+goToNext zipper =
+    let
+        upAndOver zipper =
+            case goUp zipper of
+                Nothing ->
+                    Nothing
+
+                Just zipper' ->
+                    case goRight zipper' of
+                        Nothing ->
+                            upAndOver zipper'
+
+                        zipper'' ->
+                            zipper''
+    in
+        case goToChild 0 zipper of
+            Just zipper' ->
+                Just zipper'
+
+            Nothing ->
+                case goRight zipper of
+                    Just zipper' ->
+                        Just zipper'
+
+                    Nothing ->
+                        case upAndOver zipper of
+                            Nothing ->
+                                Nothing
+
+                            zipper' ->
+                                zipper'
 
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
