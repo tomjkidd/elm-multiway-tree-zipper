@@ -79,6 +79,37 @@ tests =
                 (Just ( singleChildTree, [] )
                     &> goUp
                 )
+        , test "Navigate to left sibling on no child tree does not work"
+            <| assertEqual Nothing
+                (Just ( noChildTree, [] )
+                    &> goLeft
+                )
+        , test "Navigate to left child"
+            <| assertEqual
+                (Just ( multiChildTree, [] )
+                    &> goToChild 0
+                    &> goRight
+                )
+                (Just ( multiChildTree, [] )
+                    &> goToChild 2
+                    &> goLeft
+                )
+        , test "Navigate to left child twice"
+            <| assertEqual
+                (Just ( multiChildTree, [] )
+                    &> goToChild 0
+                )
+                (Just ( multiChildTree, [] )
+                    &> goToChild 2
+                    &> goLeft
+                    &> goLeft
+                )
+        , test "Navigate to left child when there are no siblings left return Nothing"
+            <| assertEqual Nothing
+                (Just ( multiChildTree, [] )
+                    &> goToChild 0
+                    &> goLeft
+                )
         , test "Navigate to right sibling on no child tree does not work"
             <| assertEqual Nothing
                 (Just ( noChildTree, [] )

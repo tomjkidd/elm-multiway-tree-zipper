@@ -5,6 +5,7 @@ module MultiwayTreeZipper
         , Zipper
         , goToChild
         , goUp
+        , goLeft
         , goRight
         , goToRoot
         , goToNext
@@ -158,6 +159,37 @@ goToChild n ( Tree datum children, breadcrumbs ) =
 
             Just ( before, focus, after ) ->
                 Just ( focus, (Context datum before after) :: breadcrumbs )
+
+
+{-| Move left relative to the current Zipper focus. This allows navigation from
+a child to it's previous sibling.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 1
+        &> goLeft
+-}
+goLeft : Zipper a -> Maybe (Zipper a)
+goLeft ( tree, breadcrumbs ) =
+    case breadcrumbs of
+        [] ->
+            Nothing
+
+        (Context datum before after) :: bs ->
+            case List.reverse before of
+                [] ->
+                    Nothing
+
+                tree' :: rest ->
+                    Just ( tree', (Context datum (List.reverse rest) (tree :: after)) :: bs )
 
 
 {-| Move right relative to the current Zipper focus. This allows navigation from
