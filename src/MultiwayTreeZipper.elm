@@ -23,7 +23,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goUp, goToRoot, goRight
+@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext
 
 # Update API
 @docs updateDatum, replaceDatum
@@ -223,8 +223,7 @@ goRight ( tree, breadcrumbs ) =
             Nothing
 
 
-{-| Moves to the next node in the hierarchy, depth-first. If already
-  at the end, stays there.
+{-| Moves to the next node in the hierarchy, depth-first.
 
     (&>) = Maybe.andThen
 
