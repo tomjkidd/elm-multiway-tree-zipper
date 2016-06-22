@@ -15,6 +15,8 @@ module MultiwayTreeZipper
         , replaceDatum
         , datum
         , maybeDatum
+        , insertChild
+        , appendChild
         )
 
 {-| A library for navigating and updating immutable trees. The elements in
@@ -48,7 +50,7 @@ Wanted the first version to be self contained.
 
 import List
 import Maybe exposing (Maybe(..))
-import MultiwayTree exposing (Tree(..), Forest, children)
+import MultiwayTree exposing (Tree(..), Forest, children, insertChild, appendChild)
 
 
 {-| The necessary information needed to reconstruct a MultiwayTree as it is
@@ -163,7 +165,7 @@ goToChild n ( Tree datum children, breadcrumbs ) =
                 Just ( focus, (Context datum before after) :: breadcrumbs )
 
 
-{-| Move down and as far right as possible relative to the current Zipper focus. 
+{-| Move down and as far right as possible relative to the current Zipper focus.
 This allows navigation from a parent to it's last child.
 
     (&>) = Maybe.andThen
@@ -410,6 +412,16 @@ replaceDatum newDatum =
 updateChildren : Forest a -> Zipper a -> Zipper a
 updateChildren newChildren ( Tree datum children, breadcrumbs ) =
     ( Tree datum newChildren, breadcrumbs )
+
+
+insertChild : Tree a -> Zipper a -> Maybe (Zipper a)
+insertChild child ( tree, breadcrumbs ) =
+    Just ( MultiwayTree.insertChild child tree, breadcrumbs )
+
+
+appendChild : Tree a -> Zipper a -> Maybe (Zipper a)
+appendChild child ( tree, breadcrumbs ) =
+    Just ( MultiwayTree.appendChild child tree, breadcrumbs )
 
 
 {-| Access the datum at the current Zipper focus.

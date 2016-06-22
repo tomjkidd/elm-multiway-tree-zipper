@@ -10,6 +10,8 @@ module MultiwayTree
         , flatten
         , foldr
         , foldl
+        , insertChild
+        , appendChild
         )
 
 {-| A library for constructing multi-way trees. Each Tree carries two pieces of
@@ -51,6 +53,16 @@ datum (Tree datum children) =
 children : Tree a -> Forest a
 children (Tree datum children) =
     children
+
+
+insertChild : Tree a -> Tree a -> Tree a
+insertChild childTree (Tree datum children) =
+    Tree datum (childTree :: children)
+
+
+appendChild : Tree a -> Tree a -> Tree a
+appendChild childTree (Tree datum children) =
+    Tree datum (children ++ [ childTree ])
 
 
 {-| Reduce a Tree from the left.
