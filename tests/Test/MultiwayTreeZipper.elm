@@ -10,6 +10,8 @@ import Test.FlattenTests
 import Test.FoldTests
 import Test.FilterTests
 import Test.FilterWithChildPrecedenceTests
+import Test.AppendTests
+import Test.InsertTests
 
 
 (&>) =
@@ -25,4 +27,6 @@ tests =
         , Test.FoldTests.tests
         , Test.FilterTests.tests
         , Test.FilterWithChildPrecedenceTests.tests
+        , Test.AppendTests.tests
+        , Test.InsertTests.tests
         ]
