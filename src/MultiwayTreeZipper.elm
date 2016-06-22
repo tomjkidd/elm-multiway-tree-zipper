@@ -30,7 +30,7 @@ Zipper fashion.
 @docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild
 
 # Update API
-@docs updateDatum, replaceDatum
+@docs updateDatum, replaceDatum, insertChild, appendChild
 
 # Access API
 @docs datum, maybeDatum
@@ -414,11 +414,15 @@ updateChildren newChildren ( Tree datum children, breadcrumbs ) =
     ( Tree datum newChildren, breadcrumbs )
 
 
+{-| Inserts a Tree as the first child of the Tree at the current focus. Does not move the focus.
+-}
 insertChild : Tree a -> Zipper a -> Maybe (Zipper a)
 insertChild child ( tree, breadcrumbs ) =
     Just ( MultiwayTree.insertChild child tree, breadcrumbs )
 
 
+{-| Inserts a Tree as the last child of the Tree at the current focus. Does not move the focus.
+-}
 appendChild : Tree a -> Zipper a -> Maybe (Zipper a)
 appendChild child ( tree, breadcrumbs ) =
     Just ( MultiwayTree.appendChild child tree, breadcrumbs )

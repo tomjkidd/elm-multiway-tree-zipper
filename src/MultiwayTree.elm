@@ -22,7 +22,7 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence
+@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, insertChild, appendChild
 
 # Mapping
 @docs map
@@ -55,11 +55,15 @@ children (Tree datum children) =
     children
 
 
+{-| Inserts a Tree as the first child of a Tree
+-}
 insertChild : Tree a -> Tree a -> Tree a
 insertChild childTree (Tree datum children) =
     Tree datum (childTree :: children)
 
 
+{-| Inserts a Tree as the last child of a Tree
+-}
 appendChild : Tree a -> Tree a -> Tree a
 appendChild childTree (Tree datum children) =
     Tree datum (children ++ [ childTree ])
