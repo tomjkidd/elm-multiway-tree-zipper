@@ -46,6 +46,37 @@ tests =
                     &> goToChild 0
                     &> goToChild 0
                 )
+        , test "Navigate to last child of an empty tree returns Nothing"
+            <| assertEqual Nothing
+                (Just ( noChildTree, [] )
+                    &> goToRightMostChild
+                )
+        , test "Navigate to last child of a tree with just one child moves to that child"
+            <| assertEqual
+                (Just ( singleChildTree, [] )
+                    &> goToChild 0
+                )
+                (Just ( singleChildTree, [] )
+                    &> goToRightMostChild
+                )
+        , test "Navigate to last child of a tree with multiple children moves to the last child"
+            <| assertEqual
+                (Just ( multiChildTree, [] )
+                    &> goToChild 2
+                )
+                (Just ( multiChildTree, [] )
+                    &> goToRightMostChild
+                )
+        , test "Navigate to last child of an interestingTree"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 2
+                    &> goToChild 2
+                )
+                (Just ( interestingTree, [] )
+                    &> goToRightMostChild
+                    &> goToRightMostChild
+                )
         , test "Navigate up (single level)"
             <| assertEqual (Just ( (Tree "a" [ Tree "b" [] ]), [] ))
                 (Just ( singleChildTree, [] )
@@ -195,5 +226,60 @@ tests =
                     &> goToNext
                     &> goToNext
                     &> goToNext
+                )
+        , test "Navigate to previous child when there are siblings will select the sibling"
+            <| assertEqual
+                (Just ( multiChildTree, [] )
+                    &> goToChild 1
+                )
+                (Just ( multiChildTree, [] )
+                    &> goToChild 2
+                    &> goToPrevious
+                )
+        , test "Navigate to previous child on an interesting tree will select the previous node"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                )
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                    &> goToChild 0
+                    &> goToPrevious
+                )
+        , test "Navigate to previous child when the beginning of a branch has been reached will perform backtracking until the next node down can be reached"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                    &> goToChild 0
+                    &> goToChild 0
+                )
+                (Just ( interestingTree, [] )
+                    &> goToChild 1
+                    &> goToPrevious
+                )
+        , test "Navigating past the beginning of a Tree will return Nothing"
+            <| assertEqual Nothing
+                (Just ( singleChildTree, [] )
+                    &> goToChild 0
+                    &> goToPrevious
+                    &> goToPrevious
+                )
+        , test "Consecutive goToPrevious on an interestingTree end up on the right Node"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 0
+                )
+                (Just ( interestingTree, [] )
+                    &> goToChild 2
+                    &> goToChild 2
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
+                    &> goToPrevious
                 )
         ]

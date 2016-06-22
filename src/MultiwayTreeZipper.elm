@@ -4,11 +4,13 @@ module MultiwayTreeZipper
         , Breadcrumbs
         , Zipper
         , goToChild
+        , goToRightMostChild
         , goUp
         , goLeft
         , goRight
         , goToRoot
         , goToNext
+        , goToPrevious
         , updateDatum
         , replaceDatum
         , datum
@@ -161,6 +163,26 @@ goToChild n ( Tree datum children, breadcrumbs ) =
                 Just ( focus, (Context datum before after) :: breadcrumbs )
 
 
+{-| Move down relative to the current Zipper focus. This allows navigation from
+a parent to it's last child.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToRightMostChild
+-}
+goToRightMostChild : Zipper a -> Maybe (Zipper a)
+goToRightMostChild ( Tree datum children, breadcrumbs ) =
+    goToChild ((List.length children) - 1) ( Tree datum children, breadcrumbs )
+
+
 {-| Move left relative to the current Zipper focus. This allows navigation from
 a child to it's previous sibling.
 
@@ -224,6 +246,42 @@ goRight ( tree, breadcrumbs ) =
 
 
 {-| Moves to the next node in the hierarchy, depth-first.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goToChild 2
+        &> goToPrevious
+        &> goToPrevious
+-}
+goToPrevious : Zipper a -> Maybe (Zipper a)
+goToPrevious zipper =
+    let
+        recurseDownAndRight zipper' =
+            case goToRightMostChild zipper' of
+                Just zipper'' ->
+                    recurseDownAndRight zipper''
+
+                Nothing ->
+                    Just zipper'
+    in
+        case goLeft zipper of
+            Just zipper' ->
+                recurseDownAndRight zipper'
+
+            Nothing ->
+                goUp zipper
+
+
+{-| Moves to the next node in the hierarchy, depth-first. If already
+  at the end, stays there.
 
     (&>) = Maybe.andThen
 
