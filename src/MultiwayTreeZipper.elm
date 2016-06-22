@@ -25,7 +25,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext
+@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild
 
 # Update API
 @docs updateDatum, replaceDatum
@@ -163,8 +163,8 @@ goToChild n ( Tree datum children, breadcrumbs ) =
                 Just ( focus, (Context datum before after) :: breadcrumbs )
 
 
-{-| Move down relative to the current Zipper focus. This allows navigation from
-a parent to it's last child.
+{-| Move down and as far right as possible  relative to the current Zipper focus. 
+This allows navigation from a parent to it's last child.
 
     (&>) = Maybe.andThen
 
@@ -245,7 +245,7 @@ goRight ( tree, breadcrumbs ) =
             Nothing
 
 
-{-| Moves to the next node in the hierarchy, depth-first.
+{-| Moves to the previous node in the hierarchy, depth-first.
 
     (&>) = Maybe.andThen
 
