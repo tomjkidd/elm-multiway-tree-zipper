@@ -8,6 +8,8 @@ import Test.NavigationTests
 import Test.UpdateTests
 import Test.FlattenTests
 import Test.FoldTests
+import Test.FilterTests
+import Test.FilterWithChildPrecedenceTests
 
 
 (&>) =
@@ -21,4 +23,6 @@ tests =
         , Test.UpdateTests.tests
         , Test.FlattenTests.tests
         , Test.FoldTests.tests
+        , Test.FilterTests.tests
+        , Test.FilterWithChildPrecedenceTests.tests
         ]
