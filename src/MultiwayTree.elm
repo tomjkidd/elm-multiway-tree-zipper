@@ -20,7 +20,7 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten
+@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence
 
 # Mapping
 @docs map
