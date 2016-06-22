@@ -163,7 +163,7 @@ goToChild n ( Tree datum children, breadcrumbs ) =
                 Just ( focus, (Context datum before after) :: breadcrumbs )
 
 
-{-| Move down and as far right as possible  relative to the current Zipper focus. 
+{-| Move down and as far right as possible relative to the current Zipper focus. 
 This allows navigation from a parent to it's last child.
 
     (&>) = Maybe.andThen
