@@ -26,16 +26,4 @@ tests =
         , test "If a subtree contains an element which would evaluate the predicate to True it is still not in the result Tree if the parent datum evaluates to false"
             <| assertEqual Nothing
                 (MultiwayTree.filter (\e -> e == "k") interestingTree)
-          -- , test "If a predicate evaluates to False for a Node but True for one of it's children then the Node will remain in the Tree"
-          --     <| assertEqual
-          --         (Just
-          --             (Tree "a"
-          --                 [ Tree "b"
-          --                     [ Tree "e"
-          --                         [ Tree "k" [] ]
-          --                     ]
-          --                 ]
-          --             )
-          --         )
-          --         (MultiwayTree.filter (\e -> e == "k") interestingTree)
         ]
