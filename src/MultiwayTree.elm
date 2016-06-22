@@ -5,6 +5,8 @@ module MultiwayTree
         , datum
         , children
         , map
+        , filter
+        , filterWithChildPrecedence
         , flatten
         , foldr
         , foldl
@@ -92,3 +94,28 @@ map fn (Tree datum children) =
             List.map (\child -> map fn child) children
     in
         (Tree mappedDatum mappedChildren)
+
+
+{-| Filter the MultiwayTree. Keep only elements whose datum satisfy the predicate.
+-}
+filter : (a -> Bool) -> Tree a -> Maybe (Tree a)
+filter predicate (Tree datum children) =
+    if predicate datum then
+        Just (Tree datum (List.filterMap (filter predicate) children))
+    else
+        Nothing
+
+
+{-| Filter the MultiwayTree. If the predicate is True for a Child the entire path to the root will be part of the result Tree.
+-}
+filterWithChildPrecedence : (a -> Bool) -> Tree a -> Maybe (Tree a)
+filterWithChildPrecedence predicate (Tree datum children) =
+    case List.filterMap (filterWithChildPrecedence predicate) children of
+        [] ->
+            if predicate datum then
+                Just (Tree datum [])
+            else
+                Nothing
+
+        children' ->
+            Just (Tree datum children')
