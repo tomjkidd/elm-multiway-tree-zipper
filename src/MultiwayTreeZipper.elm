@@ -11,6 +11,7 @@ module MultiwayTreeZipper
         , goToRoot
         , goToNext
         , goToPrevious
+        , goTo
         , updateDatum
         , replaceDatum
         , datum
@@ -27,7 +28,7 @@ Zipper fashion.
 @docs Context, Breadcrumbs, Zipper
 
 # Navigation API
-@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild
+@docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
 # Update API
 @docs updateDatum, replaceDatum, insertChild, appendChild
@@ -358,6 +359,34 @@ goToRoot ( tree, breadcrumbs ) =
 
         otherwise ->
             goUp ( tree, breadcrumbs ) `Maybe.andThen` goToRoot
+
+
+{-| Move the focus to the first element for which the predicate is True. If no
+such element exists returns Nothing. Starts searching at the root of the tree.
+
+    (&>) = Maybe.andThen
+
+    simpleTree =
+        Tree "a"
+            [ Tree "b"
+                [ Tree "e" [] ]
+            , Tree "c" []
+            , Tree "d" []
+            ]
+
+    Just (simpleTree, [])
+        &> goTo (\elem -> elem == "e")
+-}
+goTo : (a -> Bool) -> Zipper a -> Maybe (Zipper a)
+goTo predicate zipper =
+    let
+        goToElementOrNext ( Tree datum children, breadcrumbs ) =
+            if predicate datum then
+                Just ( Tree datum children, breadcrumbs )
+            else
+                goToNext ( Tree datum children, breadcrumbs ) `Maybe.andThen` goToElementOrNext
+    in
+        (goToRoot zipper) `Maybe.andThen` goToElementOrNext
 
 
 {-| Update the datum at the current Zipper focus. This allows changes to be made
