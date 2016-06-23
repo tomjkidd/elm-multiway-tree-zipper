@@ -282,4 +282,18 @@ tests =
                     &> goToPrevious
                     &> goToPrevious
                 )
+        , test "Trying to find a non existing element in a Tree returns Nothing"
+            <| assertEqual Nothing
+                (Just ( interestingTree, [] )
+                    &> goTo (\elem -> elem == "FOO")
+                )
+        , test "Trying to find an existing element in a Tree moves the focus to this element"
+            <| assertEqual
+                (Just ( interestingTree, [] )
+                    &> goToChild 2
+                    &> goToChild 0
+                )
+                (Just ( interestingTree, [] )
+                    &> goTo (\elem -> elem == "h")
+                )
         ]
