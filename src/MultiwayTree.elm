@@ -5,7 +5,7 @@ module MultiwayTree
         , datum
         , children
         , map
-        , map2
+        , mapListOverTree
         , indexedMap
         , filter
         , filterWithChildPrecedence
@@ -28,7 +28,7 @@ information, it's datum and children.
 @docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, insertChild, appendChild
 
 # Mapping
-@docs map, map2, indexedMap
+@docs map, mapListOverTree, indexedMap
 -}
 
 
@@ -125,8 +125,8 @@ map fn (Tree datum children) =
 
 {-| Map a Function over a List and a MultiwayTree.
 -}
-map2 : (a -> b -> result) -> List a -> Tree b -> Maybe (Tree result)
-map2 fn list (Tree datum children) =
+mapListOverTree : (a -> b -> result) -> List a -> Tree b -> Maybe (Tree result)
+mapListOverTree fn list (Tree datum children) =
     case list of
         [] ->
             Nothing
@@ -147,7 +147,7 @@ map2 fn list (Tree datum children) =
                     splitByLength (List.map length children) rest
 
                 mappedChildren =
-                    List.map2 (\l child -> map2 fn l child) listGroupedByLengthOfChildren children
+                    List.map2 (\l child -> mapListOverTree fn l child) listGroupedByLengthOfChildren children
                         |> List.filterMap identity
             in
                 Just (Tree mappedDatum mappedChildren)
@@ -177,7 +177,7 @@ splitByLength' listOflengths list accu =
 -}
 indexedMap : (Int -> a -> b) -> Tree a -> Maybe (Tree b)
 indexedMap f tree =
-    map2 f [0..(length tree - 1)] tree
+    mapListOverTree f [0..(length tree - 1)] tree
 
 
 {-| Filter the MultiwayTree. Keep only elements whose datum satisfy the predicate.
