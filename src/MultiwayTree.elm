@@ -5,11 +5,14 @@ module MultiwayTree
         , datum
         , children
         , map
+        , mapListOverTree
+        , indexedMap
         , filter
         , filterWithChildPrecedence
         , flatten
         , foldr
         , foldl
+        , length
         , insertChild
         , appendChild
         )
@@ -22,10 +25,10 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, insertChild, appendChild
+@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, insertChild, appendChild
 
 # Mapping
-@docs map
+@docs map, mapListOverTree, indexedMap
 -}
 
 
@@ -98,6 +101,14 @@ flatten tree =
     foldr (::) [] tree
 
 
+{-| Return the length of the Tree. Calculated recusively as datum (1) + length of children (n)
+    Since a MultiwayTree is never empty this function will never return Int < 1.
+-}
+length : Tree a -> Int
+length tree =
+    foldr (\_ accu -> accu + 1) 0 tree
+
+
 {-| Map over the MultiwayTree
 -}
 map : (a -> b) -> Tree a -> Tree b
@@ -110,6 +121,63 @@ map fn (Tree datum children) =
             List.map (\child -> map fn child) children
     in
         (Tree mappedDatum mappedChildren)
+
+
+{-| Map a Function over a List and a MultiwayTree.
+-}
+mapListOverTree : (a -> b -> result) -> List a -> Tree b -> Maybe (Tree result)
+mapListOverTree fn list (Tree datum children) =
+    case list of
+        [] ->
+            Nothing
+
+        head :: [] ->
+            let
+                mappedDatum =
+                    fn head datum
+            in
+                Just (Tree mappedDatum [])
+
+        head :: rest ->
+            let
+                mappedDatum =
+                    fn head datum
+
+                listGroupedByLengthOfChildren =
+                    splitByLength (List.map length children) rest
+
+                mappedChildren =
+                    List.map2 (\l child -> mapListOverTree fn l child) listGroupedByLengthOfChildren children
+                        |> List.filterMap identity
+            in
+                Just (Tree mappedDatum mappedChildren)
+
+
+splitByLength : List Int -> List a -> List (List a)
+splitByLength listOflengths list =
+    splitByLength' listOflengths list []
+
+
+splitByLength' : List Int -> List a -> List (List a) -> List (List a)
+splitByLength' listOflengths list accu =
+    case listOflengths of
+        [] ->
+            List.reverse accu
+
+        currentLength :: restLengths ->
+            case list of
+                [] ->
+                    List.reverse accu
+
+                head :: rest ->
+                    splitByLength' restLengths (List.drop currentLength list) ((List.take currentLength list) :: accu)
+
+
+{-| Same as map but the function is also applied to the index of each element (starting at zero).
+-}
+indexedMap : (Int -> a -> b) -> Tree a -> Maybe (Tree b)
+indexedMap f tree =
+    mapListOverTree f [0..(length tree - 1)] tree
 
 
 {-| Filter the MultiwayTree. Keep only elements whose datum satisfy the predicate.

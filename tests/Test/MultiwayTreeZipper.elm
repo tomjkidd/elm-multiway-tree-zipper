@@ -12,6 +12,8 @@ import Test.FilterTests
 import Test.FilterWithChildPrecedenceTests
 import Test.AppendTests
 import Test.InsertTests
+import Test.LengthTests
+import Test.IndexedMapTests
 
 
 (&>) =
@@ -29,4 +31,6 @@ tests =
         , Test.FilterWithChildPrecedenceTests.tests
         , Test.AppendTests.tests
         , Test.InsertTests.tests
+        , Test.LengthTests.tests
+        , Test.IndexedMapTests.tests
         ]
