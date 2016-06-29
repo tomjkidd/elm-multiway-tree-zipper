@@ -15,6 +15,8 @@ module MultiwayTree
         , length
         , insertChild
         , appendChild
+        , sortBy
+        , sortWith
         )
 
 {-| A library for constructing multi-way trees. Each Tree carries two pieces of
@@ -29,6 +31,9 @@ information, it's datum and children.
 
 # Mapping
 @docs map, mapListOverTree, indexedMap
+
+# Sorting
+@docs sortBy, sortWith
 -}
 
 
@@ -203,3 +208,49 @@ filterWithChildPrecedence predicate (Tree datum children) =
 
         children' ->
             Just (Tree datum children')
+
+
+{-| Sort values by a derived property. Does not alter the nesting structure of
+    the Tree, that is it does not move Nodes up or down levels.
+
+    (sortBy identity
+        Tree "a"
+            [ Tree "b" []
+            , Tree "d" []
+            , Tree "c" []
+            ])
+    == (Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ])
+-}
+sortBy : (a -> comparable) -> Tree a -> Tree a
+sortBy fn (Tree datum children) =
+    let
+        sortedChildren =
+            List.sortBy (\(Tree childDatum children') -> fn childDatum) children
+                |> List.map (sortBy fn)
+    in
+        (Tree datum sortedChildren)
+
+
+{-| Sort values with a custom comparison function like:
+
+    flippedComparison a b =
+        case compare a b of
+          LT -> GT
+          EQ -> EQ
+          GT -> LT
+
+    This is also the most general sort function, allowing you
+    to define any other.
+-}
+sortWith : (a -> a -> Order) -> Tree a -> Tree a
+sortWith comperator (Tree datum children) =
+    let
+        sortedChildren =
+            List.sortWith (\(Tree first _) (Tree second _) -> comperator first second) children
+                |> List.map (sortWith comperator)
+    in
+        (Tree datum sortedChildren)
