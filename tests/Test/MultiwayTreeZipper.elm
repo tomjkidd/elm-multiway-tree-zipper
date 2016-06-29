@@ -14,6 +14,7 @@ import Test.AppendTests
 import Test.InsertTests
 import Test.LengthTests
 import Test.IndexedMapTests
+import Test.TuplesOfDatumAndFlatChildrenTests
 
 
 (&>) =
@@ -33,4 +34,5 @@ tests =
         , Test.InsertTests.tests
         , Test.LengthTests.tests
         , Test.IndexedMapTests.tests
+        , Test.TuplesOfDatumAndFlatChildrenTests.tests
         ]
