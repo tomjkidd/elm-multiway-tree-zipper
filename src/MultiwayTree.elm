@@ -10,6 +10,7 @@ module MultiwayTree
         , filter
         , filterWithChildPrecedence
         , flatten
+        , tuplesOfDatumAndFlatChildren
         , foldr
         , foldl
         , length
@@ -25,7 +26,7 @@ information, it's datum and children.
 @docs Tree, Forest
 
 # Operations
-@docs datum, children, foldl, foldr, flatten, filter, filterWithChildPrecedence, length, insertChild, appendChild
+@docs datum, children, foldl, foldr, flatten, tuplesOfDatumAndFlatChildren, filter, filterWithChildPrecedence, length, insertChild, appendChild
 
 # Mapping
 @docs map, mapListOverTree, indexedMap
@@ -99,6 +100,21 @@ foldr f accu (Tree datum children) =
 flatten : Tree a -> List a
 flatten tree =
     foldr (::) [] tree
+
+
+{-| A special version of flatten which flattens a Tree into a List of Tuples like (element, [all elements in subtree])
+
+    (Tree.tuplesOfDatumAndFlatChildren
+        Tree "a"
+            [ Tree "b" []
+            , Tree "c" []
+            , Tree "d" []
+            ])
+    == [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
+-}
+tuplesOfDatumAndFlatChildren : Tree a -> List ( a, List a )
+tuplesOfDatumAndFlatChildren (Tree datum children) =
+    [ ( datum, List.concatMap flatten children ) ] ++ (List.concatMap tuplesOfDatumAndFlatChildren children)
 
 
 {-| Return the length of the Tree. Calculated recusively as datum (1) + length of children (n)
