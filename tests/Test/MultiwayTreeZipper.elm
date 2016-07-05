@@ -1,9 +1,6 @@
 module Test.MultiwayTreeZipper exposing (tests)
 
 import ElmTest exposing (..)
-import MultiwayTree exposing (Tree(..))
-import MultiwayTreeZipper exposing (..)
-import Test.SampleData exposing (singleChildTree, multiChildTree, deepTree)
 import Test.NavigationTests
 import Test.UpdateTests
 import Test.FlattenTests
@@ -15,10 +12,7 @@ import Test.InsertTests
 import Test.LengthTests
 import Test.IndexedMapTests
 import Test.TuplesOfDatumAndFlatChildrenTests
-
-
-(&>) =
-    Maybe.andThen
+import Test.SortTests
 
 
 tests : Test
@@ -35,4 +29,5 @@ tests =
         , Test.LengthTests.tests
         , Test.IndexedMapTests.tests
         , Test.TuplesOfDatumAndFlatChildrenTests.tests
+        , Test.SortTests.tests
         ]
