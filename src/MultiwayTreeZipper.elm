@@ -18,6 +18,7 @@ module MultiwayTreeZipper
         , maybeDatum
         , insertChild
         , appendChild
+        , updateChildren
         )
 
 {-| A library for navigating and updating immutable trees. The elements in
@@ -31,7 +32,7 @@ Zipper fashion.
 @docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
 # Update API
-@docs updateDatum, replaceDatum, insertChild, appendChild
+@docs updateDatum, replaceDatum, insertChild, appendChild, updateChildren
 
 # Access API
 @docs datum, maybeDatum
