@@ -6,6 +6,7 @@ import MultiwayTree exposing (Tree (..))
 import MultiwayTreeZipper exposing (..)
 import Test.SampleData exposing
     ( noChildTree, singleChildTree, multiChildTree, deepTree
+    , interestingTree, simpleForest
     , noChildRecord )
 
 (&>) = Maybe.andThen
@@ -37,4 +38,15 @@ tests =
                   (Just (noChildRecord, [])
                     &> replaceDatum { selected = True, expanded = True } )
 
+          , test "Replace children (replace with empty)"
+              <| assertEqual
+                  (Just (noChildTree, []))
+                  (Just (singleChildTree, [])
+                    &> updateChildren [] )
+
+          , test "Replace children (replace with specific)"
+              <| assertEqual
+                  (Just (Tree "a" simpleForest, []))
+                  (Just (interestingTree, [])
+                    &> updateChildren simpleForest)
           ]

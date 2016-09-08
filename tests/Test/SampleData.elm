@@ -1,6 +1,6 @@
 module Test.SampleData exposing (..)
 
-import MultiwayTree exposing (Tree (..))
+import MultiwayTree exposing (Tree (..), Forest)
 
 interestingTree : Tree String
 interestingTree =
@@ -44,3 +44,9 @@ deepTree =
                 [ Tree "d" [] ]
             ]
         ]
+
+simpleForest =
+    [ (Tree "x" [])
+    , (Tree "y" [])
+    , (Tree "z" [])
+    ]

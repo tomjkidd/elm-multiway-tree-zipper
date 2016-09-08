@@ -18,6 +18,7 @@ module MultiwayTreeZipper
         , maybeDatum
         , insertChild
         , appendChild
+        , updateChildren
         )
 
 {-| A library for navigating and updating immutable trees. The elements in
@@ -31,7 +32,7 @@ Zipper fashion.
 @docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
 # Update API
-@docs updateDatum, replaceDatum, insertChild, appendChild
+@docs updateDatum, replaceDatum, insertChild, appendChild, updateChildren
 
 # Access API
 @docs datum, maybeDatum
@@ -438,9 +439,9 @@ replaceDatum newDatum =
 
 {-| Fully replace the children at the current Zipper focus.
 -}
-updateChildren : Forest a -> Zipper a -> Zipper a
+updateChildren : Forest a -> Zipper a -> Maybe (Zipper a)
 updateChildren newChildren ( Tree datum children, breadcrumbs ) =
-    ( Tree datum newChildren, breadcrumbs )
+    Just ( Tree datum newChildren, breadcrumbs )
 
 
 {-| Inserts a Tree as the first child of the Tree at the current focus. Does not move the focus.
