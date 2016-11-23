@@ -1,6 +1,6 @@
 module Test.FilterTests exposing (..)
 
-import ElmTest exposing (..)
+import Legacy.ElmTest as ElmTest exposing (..)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
 import Test.SampleData

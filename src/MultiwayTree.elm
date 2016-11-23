@@ -83,8 +83,8 @@ appendChild childTree (Tree datum children) =
 foldl : (a -> b -> b) -> b -> Tree a -> b
 foldl f accu (Tree datum children) =
     let
-        treeUnwrap (Tree datum' children') accu' =
-            List.foldl treeUnwrap (f datum' accu') children'
+        treeUnwrap (Tree datum_ children_) accu_ =
+            List.foldl treeUnwrap (f datum_ accu_) children_
     in
         List.foldl treeUnwrap (f datum accu) children
 
@@ -94,8 +94,8 @@ foldl f accu (Tree datum children) =
 foldr : (a -> b -> b) -> b -> Tree a -> b
 foldr f accu (Tree datum children) =
     let
-        treeUnwrap (Tree datum' children') accu' =
-            f datum' (List.foldr treeUnwrap accu' children')
+        treeUnwrap (Tree datum_ children_) accu_ =
+            f datum_ (List.foldr treeUnwrap accu_ children_)
     in
         f datum (List.foldr treeUnwrap accu children)
 
@@ -176,11 +176,11 @@ mapListOverTree fn list (Tree datum children) =
 
 splitByLength : List Int -> List a -> List (List a)
 splitByLength listOflengths list =
-    splitByLength' listOflengths list []
+    splitByLength_ listOflengths list []
 
 
-splitByLength' : List Int -> List a -> List (List a) -> List (List a)
-splitByLength' listOflengths list accu =
+splitByLength_ : List Int -> List a -> List (List a) -> List (List a)
+splitByLength_ listOflengths list accu =
     case listOflengths of
         [] ->
             List.reverse accu
@@ -191,14 +191,14 @@ splitByLength' listOflengths list accu =
                     List.reverse accu
 
                 head :: rest ->
-                    splitByLength' restLengths (List.drop currentLength list) ((List.take currentLength list) :: accu)
+                    splitByLength_ restLengths (List.drop currentLength list) ((List.take currentLength list) :: accu)
 
 
 {-| Same as map but the function is also applied to the index of each element (starting at zero).
 -}
 indexedMap : (Int -> a -> b) -> Tree a -> Maybe (Tree b)
 indexedMap f tree =
-    mapListOverTree f [0..(length tree - 1)] tree
+    mapListOverTree f (List.range 0 (length tree - 1)) tree
 
 
 {-| Filter the MultiwayTree. Keep only elements whose datum satisfy the predicate.
@@ -222,8 +222,8 @@ filterWithChildPrecedence predicate (Tree datum children) =
             else
                 Nothing
 
-        children' ->
-            Just (Tree datum children')
+        children_ ->
+            Just (Tree datum children_)
 
 
 {-| Sort values by a derived property. Does not alter the nesting structure of
@@ -245,7 +245,7 @@ sortBy : (a -> comparable) -> Tree a -> Tree a
 sortBy fn (Tree datum children) =
     let
         sortedChildren =
-            List.sortBy (\(Tree childDatum children') -> fn childDatum) children
+            List.sortBy (\(Tree childDatum children_) -> fn childDatum) children
                 |> List.map (sortBy fn)
     in
         (Tree datum sortedChildren)

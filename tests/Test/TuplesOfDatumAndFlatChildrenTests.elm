@@ -1,6 +1,6 @@
 module Test.TuplesOfDatumAndFlatChildrenTests exposing (..)
 
-import ElmTest exposing (..)
+import Legacy.ElmTest as ElmTest exposing (..)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
 import Test.SampleData
@@ -17,14 +17,14 @@ import Test.SampleData
 tests : Test
 tests =
     suite "TuplesOfDatumAndFlatChildren"
-        [ test "TuplesOfDatumAndFlatChildren multiChildTree"
-            <| assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
+        [ test "TuplesOfDatumAndFlatChildren multiChildTree" <|
+            assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
                 (MultiwayTree.tuplesOfDatumAndFlatChildren multiChildTree)
-        , test "TuplesOfDatumAndFlatChildren deepTree"
-            <| assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [ "c", "d" ] ), ( "c", [ "d" ] ), ( "d", [] ) ]
+        , test "TuplesOfDatumAndFlatChildren deepTree" <|
+            assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [ "c", "d" ] ), ( "c", [ "d" ] ), ( "d", [] ) ]
                 (MultiwayTree.tuplesOfDatumAndFlatChildren deepTree)
-        , test "TuplesOfDatumAndFlatChildren interestingTree"
-            <| assertEqual
+        , test "TuplesOfDatumAndFlatChildren interestingTree" <|
+            assertEqual
                 [ ( "a", [ "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ] )
                 , ( "b", [ "e", "k" ] )
                 , ( "e", [ "k" ] )

@@ -1,6 +1,7 @@
 module Test.SampleData exposing (..)
 
-import MultiwayTree exposing (Tree (..), Forest)
+import MultiwayTree exposing (Tree(..), Forest)
+
 
 interestingTree : Tree String
 interestingTree =
@@ -20,15 +21,19 @@ interestingTree =
             ]
         ]
 
+
 noChildTree =
     Tree "a" []
+
 
 noChildRecord =
     Tree { selected = False, expanded = False } []
 
+
 singleChildTree =
     Tree "a"
         [ Tree "b" [] ]
+
 
 multiChildTree =
     Tree "a"
@@ -37,6 +42,7 @@ multiChildTree =
         , Tree "d" []
         ]
 
+
 deepTree =
     Tree "a"
         [ Tree "b"
@@ -44,6 +50,7 @@ deepTree =
                 [ Tree "d" [] ]
             ]
         ]
+
 
 simpleForest =
     [ (Tree "x" [])

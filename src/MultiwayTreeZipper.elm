@@ -214,8 +214,8 @@ goLeft ( tree, breadcrumbs ) =
                 [] ->
                     Nothing
 
-                tree' :: rest ->
-                    Just ( tree', (Context datum (List.reverse rest) (tree :: after)) :: bs )
+                tree_ :: rest ->
+                    Just ( tree_, (Context datum (List.reverse rest) (tree :: after)) :: bs )
 
 
 {-| Move right relative to the current Zipper focus. This allows navigation from
@@ -268,17 +268,17 @@ goRight ( tree, breadcrumbs ) =
 goToPrevious : Zipper a -> Maybe (Zipper a)
 goToPrevious zipper =
     let
-        recurseDownAndRight zipper' =
-            case goToRightMostChild zipper' of
-                Just zipper'' ->
-                    recurseDownAndRight zipper''
+        recurseDownAndRight zipper_ =
+            case goToRightMostChild zipper_ of
+                Just zipper__ ->
+                    recurseDownAndRight zipper__
 
                 Nothing ->
-                    Just zipper'
+                    Just zipper_
     in
         case goLeft zipper of
-            Just zipper' ->
-                recurseDownAndRight zipper'
+            Just zipper_ ->
+                recurseDownAndRight zipper_
 
             Nothing ->
                 goUp zipper
@@ -308,30 +308,30 @@ goToNext zipper =
                 Nothing ->
                     Nothing
 
-                Just zipper' ->
-                    case goRight zipper' of
+                Just zipper_ ->
+                    case goRight zipper_ of
                         Nothing ->
-                            upAndOver zipper'
+                            upAndOver zipper_
 
-                        zipper'' ->
-                            zipper''
+                        zipper__ ->
+                            zipper__
     in
         case goToChild 0 zipper of
-            Just zipper' ->
-                Just zipper'
+            Just zipper_ ->
+                Just zipper_
 
             Nothing ->
                 case goRight zipper of
-                    Just zipper' ->
-                        Just zipper'
+                    Just zipper_ ->
+                        Just zipper_
 
                     Nothing ->
                         case upAndOver zipper of
                             Nothing ->
                                 Nothing
 
-                            zipper' ->
-                                zipper'
+                            zipper_ ->
+                                zipper_
 
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
@@ -359,7 +359,7 @@ goToRoot ( tree, breadcrumbs ) =
             Just ( tree, breadcrumbs )
 
         otherwise ->
-            goUp ( tree, breadcrumbs ) `Maybe.andThen` goToRoot
+            goUp ( tree, breadcrumbs ) |> Maybe.andThen goToRoot
 
 
 {-| Move the focus to the first element for which the predicate is True. If no
@@ -385,9 +385,9 @@ goTo predicate zipper =
             if predicate datum then
                 Just ( Tree datum children, breadcrumbs )
             else
-                goToNext ( Tree datum children, breadcrumbs ) `Maybe.andThen` goToElementOrNext
+                goToNext ( Tree datum children, breadcrumbs ) |> Maybe.andThen goToElementOrNext
     in
-        (goToRoot zipper) `Maybe.andThen` goToElementOrNext
+        (goToRoot zipper) |> Maybe.andThen goToElementOrNext
 
 
 {-| Update the datum at the current Zipper focus. This allows changes to be made
