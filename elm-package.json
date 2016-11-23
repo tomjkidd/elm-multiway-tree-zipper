@@ -1,5 +1,5 @@
 {
-    "version": "1.10.0",
+    "version": "1.11.0",
     "summary": "A library for navigating and updating immutable trees.",
     "repository": "https://github.com/tomjkidd/elm-multiway-tree-zipper.git",
     "license": "BSD3",
@@ -12,7 +12,7 @@
         "MultiwayTreeZipper"
     ],
     "dependencies": {
-        "elm-lang/core": "4.0.0 <= v < 5.0.0"
+        "elm-lang/core": "5.0.0 <= v < 6.0.0"
     },
-    "elm-version": "0.17.0 <= v < 0.18.0"
+    "elm-version": "0.18.0 <= v < 0.19.0"
 }
