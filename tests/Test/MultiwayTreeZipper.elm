@@ -1,6 +1,6 @@
 module Test.MultiwayTreeZipper exposing (tests)
 
-import ElmTest exposing (..)
+import Legacy.ElmTest as ElmTest exposing (..)
 import Test.NavigationTests
 import Test.UpdateTests
 import Test.FlattenTests

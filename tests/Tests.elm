@@ -1,8 +1,8 @@
 module Tests exposing (..)
 
-import ElmTest exposing (..)
-
+import Legacy.ElmTest as ElmTest exposing (..)
 import Test.MultiwayTreeZipper as MultiwayTreeZipper
+
 
 all : Test
 all =
@@ -10,5 +10,7 @@ all =
         [ MultiwayTreeZipper.tests
         ]
 
-main : Program Never
-main = runSuite all
+
+main : Program Never () msg
+main =
+    runSuite all

@@ -1,6 +1,6 @@
 module Test.InsertTests exposing (..)
 
-import ElmTest exposing (..)
+import Legacy.ElmTest as ElmTest exposing (..)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
 import Test.SampleData
@@ -12,17 +12,14 @@ import Test.SampleData
         , noChildRecord
         , interestingTree
         )
-
-
-(&>) =
-    Maybe.andThen
+import Test.Utils exposing (..)
 
 
 tests : Test
 tests =
     suite "Insert"
-        [ test "Inserting children can turn a multiChildTree into an interestingTree"
-            <| assertEqual (Just ( interestingTree, [] ))
+        [ test "Inserting children can turn a multiChildTree into an interestingTree" <|
+            assertEqual (Just ( interestingTree, [] ))
                 (Just ( multiChildTree, [] )
                     &> goToChild 0
                     &> insertChild (Tree "e" [])
