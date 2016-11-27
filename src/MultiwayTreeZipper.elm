@@ -115,7 +115,7 @@ splitOnIndex n xs =
 {-| Move up relative to the current Zipper focus. This allows navigation from a
 child to it's parent.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -141,7 +141,7 @@ goUp ( tree, breadcrumbs ) =
 {-| Move down relative to the current Zipper focus. This allows navigation from
 a parent to it's children.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -170,7 +170,7 @@ goToChild n ( Tree datum children, breadcrumbs ) =
 {-| Move down and as far right as possible relative to the current Zipper focus.
 This allows navigation from a parent to it's last child.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -190,7 +190,7 @@ goToRightMostChild ( Tree datum children, breadcrumbs ) =
 {-| Move left relative to the current Zipper focus. This allows navigation from
 a child to it's previous sibling.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -221,7 +221,7 @@ goLeft ( tree, breadcrumbs ) =
 {-| Move right relative to the current Zipper focus. This allows navigation from
 a child to it's next sibling.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -251,7 +251,7 @@ goRight ( tree, breadcrumbs ) =
 
 {-| Moves to the previous node in the hierarchy, depth-first.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -287,7 +287,7 @@ goToPrevious zipper =
 {-| Moves to the next node in the hierarchy, depth-first. If already
   at the end, stays there.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -337,7 +337,7 @@ goToNext zipper =
 {-| Move to the root of the current Zipper focus. This allows navigation from
 any part of the tree back to the root.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -365,7 +365,7 @@ goToRoot ( tree, breadcrumbs ) =
 {-| Move the focus to the first element for which the predicate is True. If no
 such element exists returns Nothing. Starts searching at the root of the tree.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -393,7 +393,7 @@ goTo predicate zipper =
 {-| Update the datum at the current Zipper focus. This allows changes to be made
 to a part of a node's datum information, given the previous state of the node.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
@@ -417,7 +417,7 @@ updateDatum fn ( Tree datum children, breadcrumbs ) =
 replacement of a node's datum information, ignoring the previous state of the
 node.
 
-    (&>) = Maybe.andThen
+    (&>) = flip Maybe.andThen
 
     simpleTree =
         Tree "a"
