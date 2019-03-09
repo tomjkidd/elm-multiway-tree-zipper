@@ -1,41 +1,47 @@
-module Test.TuplesOfDatumAndFlatChildrenTests exposing (..)
+module Test.TuplesOfDatumAndFlatChildrenTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
-tests : Test
-tests =
-    suite "TuplesOfDatumAndFlatChildren"
+suite : Test
+suite =
+    describe "TuplesOfDatumAndFlatChildren"
         [ test "TuplesOfDatumAndFlatChildren multiChildTree" <|
-            assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren multiChildTree)
+            \_ ->
+                Expect.equal
+                    [ ( "a", [ "b", "c", "d" ] ), ( "b", [] ), ( "c", [] ), ( "d", [] ) ]
+                    (MultiwayTree.tuplesOfDatumAndFlatChildren multiChildTree)
         , test "TuplesOfDatumAndFlatChildren deepTree" <|
-            assertEqual [ ( "a", [ "b", "c", "d" ] ), ( "b", [ "c", "d" ] ), ( "c", [ "d" ] ), ( "d", [] ) ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren deepTree)
+            \_ ->
+                Expect.equal
+                    [ ( "a", [ "b", "c", "d" ] ), ( "b", [ "c", "d" ] ), ( "c", [ "d" ] ), ( "d", [] ) ]
+                    (MultiwayTree.tuplesOfDatumAndFlatChildren deepTree)
         , test "TuplesOfDatumAndFlatChildren interestingTree" <|
-            assertEqual
-                [ ( "a", [ "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ] )
-                , ( "b", [ "e", "k" ] )
-                , ( "e", [ "k" ] )
-                , ( "k", [] )
-                , ( "c", [ "f", "g" ] )
-                , ( "f", [] )
-                , ( "g", [] )
-                , ( "d", [ "h", "i", "j" ] )
-                , ( "h", [] )
-                , ( "i", [] )
-                , ( "j", [] )
-                ]
-                (MultiwayTree.tuplesOfDatumAndFlatChildren interestingTree)
+            \_ ->
+                Expect.equal
+                    [ ( "a", [ "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ] )
+                    , ( "b", [ "e", "k" ] )
+                    , ( "e", [ "k" ] )
+                    , ( "k", [] )
+                    , ( "c", [ "f", "g" ] )
+                    , ( "f", [] )
+                    , ( "g", [] )
+                    , ( "d", [ "h", "i", "j" ] )
+                    , ( "h", [] )
+                    , ( "i", [] )
+                    , ( "j", [] )
+                    ]
+                    (MultiwayTree.tuplesOfDatumAndFlatChildren interestingTree)
         ]

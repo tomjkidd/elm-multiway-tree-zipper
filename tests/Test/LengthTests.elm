@@ -1,32 +1,41 @@
-module Test.LengthTests exposing (..)
+module Test.LengthTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect exposing (Expectation)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
-tests : Test
-tests =
-    suite "Length"
+suite : Test
+suite =
+    describe "Length"
         [ test "Length of an interesting Tree" <|
-            assertEqual 11
-                (MultiwayTree.length interestingTree)
+            \_ ->
+                Expect.equal
+                    11
+                    (MultiwayTree.length interestingTree)
         , test "Length of a noChildTree" <|
-            assertEqual 1
-                (MultiwayTree.length noChildTree)
+            \_ ->
+                Expect.equal
+                    1
+                    (MultiwayTree.length noChildTree)
         , test "Length of a deepTree" <|
-            assertEqual 4
-                (MultiwayTree.length deepTree)
+            \_ ->
+                Expect.equal
+                    4
+                    (MultiwayTree.length deepTree)
         , test "Length of a Tree is equal to length of a flattened tree" <|
-            assertEqual (List.length (MultiwayTree.flatten interestingTree))
-                (MultiwayTree.length interestingTree)
+            \_ ->
+                Expect.equal
+                    (List.length (MultiwayTree.flatten interestingTree))
+                    (MultiwayTree.length interestingTree)
         ]

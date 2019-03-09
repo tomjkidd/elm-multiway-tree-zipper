@@ -1,15 +1,16 @@
-module Test.SortTests exposing (..)
+module Test.SortTests exposing (flippedComparison, reverseSortedTree, suite, unorderedTree)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect
 import MultiwayTree exposing (Tree(..))
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
@@ -64,19 +65,27 @@ flippedComparison a b =
             LT
 
 
-tests : Test
-tests =
-    suite "Sort"
+suite : Test
+suite =
+    describe "Sort"
         [ test "Sorting a Tree with only one child per levels yields the same Tree" <|
-            assertEqual deepTree
-                (MultiwayTree.sortBy identity deepTree)
+            \_ ->
+                Expect.equal
+                    deepTree
+                    (MultiwayTree.sortBy identity deepTree)
         , test "Sorting a sorted Tree returns the same Tree" <|
-            assertEqual interestingTree
-                (MultiwayTree.sortBy identity interestingTree)
+            \_ ->
+                Expect.equal
+                    interestingTree
+                    (MultiwayTree.sortBy identity interestingTree)
         , test "Sorting an unsorted Tree returns a sorted Tree" <|
-            assertEqual interestingTree
-                (MultiwayTree.sortBy identity unorderedTree)
+            \_ ->
+                Expect.equal
+                    interestingTree
+                    (MultiwayTree.sortBy identity unorderedTree)
         , test "Sorting with a Tree with a reversed comperator reverse-sorts a Tree" <|
-            assertEqual reverseSortedTree
-                (MultiwayTree.sortWith flippedComparison interestingTree)
+            \_ ->
+                Expect.equal
+                    reverseSortedTree
+                    (MultiwayTree.sortWith flippedComparison interestingTree)
         ]

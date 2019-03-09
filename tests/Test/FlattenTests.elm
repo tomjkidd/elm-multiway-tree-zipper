@@ -1,29 +1,36 @@
-module Test.FlattenTests exposing (..)
+module Test.FlattenTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect exposing (Expectation)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
-tests : Test
-tests =
-    suite "Flatten"
-        [ test "Flatten multiChildTree"
-            <| assertEqual [ "a", "b", "c", "d" ]
-                (MultiwayTree.flatten multiChildTree)
-        , test "Flatten deepTree"
-            <| assertEqual [ "a", "b", "c", "d" ]
-                (MultiwayTree.flatten deepTree)
-        , test "Flatten interestingTree"
-            <| assertEqual [ "a", "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ]
-                (MultiwayTree.flatten interestingTree)
+suite : Test
+suite =
+    describe "Flatten"
+        [ test "Flatten multiChildTree" <|
+            \_ ->
+                Expect.equal
+                    [ "a", "b", "c", "d" ]
+                    (MultiwayTree.flatten multiChildTree)
+        , test "Flatten deepTree" <|
+            \_ ->
+                Expect.equal
+                    [ "a", "b", "c", "d" ]
+                    (MultiwayTree.flatten deepTree)
+        , test "Flatten interestingTree" <|
+            \_ ->
+                Expect.equal
+                    [ "a", "b", "e", "k", "c", "f", "g", "d", "h", "i", "j" ]
+                    (MultiwayTree.flatten interestingTree)
         ]

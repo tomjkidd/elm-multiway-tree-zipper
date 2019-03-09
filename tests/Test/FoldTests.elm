@@ -1,23 +1,26 @@
-module Test.FoldTests exposing (..)
+module Test.FoldTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect exposing (Expectation)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
-tests : Test
-tests =
-    suite "Fold"
-        [ test "Foldl interestingTree into List"
-            <| assertEqual (MultiwayTree.flatten interestingTree)
-                ((MultiwayTree.foldl (::) [] interestingTree) |> List.reverse)
+suite : Test
+suite =
+    describe "Fold"
+        [ test "Foldl interestingTree into List" <|
+            \_ ->
+                Expect.equal
+                    (MultiwayTree.flatten interestingTree)
+                    (MultiwayTree.foldl (::) [] interestingTree |> List.reverse)
         ]

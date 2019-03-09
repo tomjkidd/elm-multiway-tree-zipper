@@ -1,58 +1,65 @@
-module Test.UpdateTests exposing (..)
+module Test.UpdateTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect
+import Maybe exposing (andThen)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
+        ( deepTree
         , interestingTree
-        , simpleForest
+        , multiChildTree
         , noChildRecord
+        , noChildTree
+        , simpleForest
+        , singleChildTree
         )
-import Test.Utils exposing (..)
 
 
-tests : Test
-tests =
-    suite "Update"
+suite : Test
+suite =
+    describe "Update"
         [ test "Update datum (simple)" <|
-            assertEqual
-                (Just ( (Tree "ax" []), [] ))
-                (Just ( noChildTree, [] )
-                    &> updateDatum (\a -> a ++ "x")
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( Tree "ax" [], [] ))
+                    (Just ( noChildTree, [] )
+                        |> andThen (updateDatum (\a -> a ++ "x"))
+                    )
         , test "Update datum (record)" <|
-            assertEqual
-                (Just ( (Tree { selected = True, expanded = False } []), [] ))
-                (Just ( noChildRecord, [] )
-                    &> updateDatum (\rec -> { rec | selected = True })
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( Tree { selected = True, expanded = False } [], [] ))
+                    (Just ( noChildRecord, [] )
+                        |> andThen (updateDatum (\rec -> { rec | selected = True }))
+                    )
         , test "Replace datum (simple)" <|
-            assertEqual
-                (Just ( (Tree "x" []), [] ))
-                (Just ( noChildTree, [] )
-                    &> replaceDatum "x"
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( Tree "x" [], [] ))
+                    (Just ( noChildTree, [] )
+                        |> andThen (replaceDatum "x")
+                    )
         , test "Replace datum (record)" <|
-            assertEqual
-                (Just ( (Tree { selected = True, expanded = True } []), [] ))
-                (Just ( noChildRecord, [] )
-                    &> replaceDatum { selected = True, expanded = True }
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( Tree { selected = True, expanded = True } [], [] ))
+                    (Just ( noChildRecord, [] )
+                        |> andThen (replaceDatum { selected = True, expanded = True })
+                    )
         , test "Replace children (replace with empty)" <|
-            assertEqual
-                (Just ( noChildTree, [] ))
-                (Just ( singleChildTree, [] )
-                    &> updateChildren []
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( noChildTree, [] ))
+                    (Just ( singleChildTree, [] )
+                        |> andThen (updateChildren [])
+                    )
         , test "Replace children (replace with specific)" <|
-            assertEqual
-                (Just ( Tree "a" simpleForest, [] ))
-                (Just ( interestingTree, [] )
-                    &> updateChildren simpleForest
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( Tree "a" simpleForest, [] ))
+                    (Just ( interestingTree, [] )
+                        |> andThen (updateChildren simpleForest)
+                    )
         ]

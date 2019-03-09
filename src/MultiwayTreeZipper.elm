@@ -1,48 +1,43 @@
-module MultiwayTreeZipper
-    exposing
-        ( Context(..)
-        , Breadcrumbs
-        , Zipper
-        , goToChild
-        , goToRightMostChild
-        , goUp
-        , goLeft
-        , goRight
-        , goToRoot
-        , goToNext
-        , goToPrevious
-        , goTo
-        , updateDatum
-        , replaceDatum
-        , datum
-        , maybeDatum
-        , insertChild
-        , appendChild
-        , updateChildren
-        )
+module MultiwayTreeZipper exposing
+    ( Context(..), Breadcrumbs, Zipper
+    , goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
+    , updateDatum, replaceDatum, insertChild, appendChild, updateChildren
+    , datum, maybeDatum
+    )
 
 {-| A library for navigating and updating immutable trees. The elements in
 the tree must have the same type. The trees are implemented in a Huet
 Zipper fashion.
 
+
 # Types
+
 @docs Context, Breadcrumbs, Zipper
 
+
 # Navigation API
+
 @docs goToChild, goUp, goToRoot, goLeft, goRight, goToNext, goToPrevious, goToRightMostChild, goTo
 
+
 # Update API
+
 @docs updateDatum, replaceDatum, insertChild, appendChild, updateChildren
 
+
 # Access API
+
 @docs datum, maybeDatum
 
 
 # References
+
 [The Zipper, Gerard Huet](https://www.st.cs.uni-saarland.de/edu/seminare/2005/advanced-fp/docs/huet-zipper.pdf)
 [Learn You A Haskell, Zippers, Miran Lipovaca](http://learnyouahaskell.com/zippers)
 
+
 # Future work
+
 Might be able to integrate existing [Rose Tree](http://package.elm-lang.org/packages/TheSeamau5/elm-rosetree) to work with the Zipper.
 Wanted the first version to be self contained.
 
@@ -52,7 +47,7 @@ Wanted the first version to be self contained.
 
 import List
 import Maybe exposing (Maybe(..))
-import MultiwayTree exposing (Tree(..), Forest, children, insertChild, appendChild)
+import MultiwayTree exposing (Forest, Tree(..), appendChild, children, insertChild)
 
 
 {-| The necessary information needed to reconstruct a MultiwayTree as it is
@@ -86,11 +81,13 @@ needs. In order to navigate to children of any Tree, a way to break the children
 into pieces is needed.
 
 The pieces are:
-* before: The list of children that come before the desired child
-* focus: The desired child Tree
-* after: The list of children that come after the desired child
+
+  - before: The list of children that come before the desired child
+  - focus: The desired child Tree
+  - after: The list of children that come after the desired child
 
 These pieces help create a Context, which assist the Zipper
+
 -}
 splitOnIndex : Int -> List (Tree a) -> Maybe ( List (Tree a), Tree a, List (Tree a) )
 splitOnIndex n xs =
@@ -104,18 +101,18 @@ splitOnIndex n xs =
         after =
             List.drop (n + 1) xs
     in
-        case focus of
-            Nothing ->
-                Nothing
+    case focus of
+        Nothing ->
+            Nothing
 
-            Just f ->
-                Just ( before, f, after )
+        Just f ->
+            Just ( before, f, after )
 
 
 {-| Move up relative to the current Zipper focus. This allows navigation from a
 child to it's parent.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -125,14 +122,15 @@ child to it's parent.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 0
-        &> goUp
+        |> andThen (goToChild 0)
+        |> andThen goUp
+
 -}
 goUp : Zipper a -> Maybe (Zipper a)
 goUp ( tree, breadcrumbs ) =
     case breadcrumbs of
-        (Context datum before after) :: bs ->
-            Just ( Tree datum (before ++ [ tree ] ++ after), bs )
+        (Context d before after) :: bs ->
+            Just ( Tree d (before ++ [ tree ] ++ after), bs )
 
         [] ->
             Nothing
@@ -141,7 +139,7 @@ goUp ( tree, breadcrumbs ) =
 {-| Move down relative to the current Zipper focus. This allows navigation from
 a parent to it's children.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -151,26 +149,27 @@ a parent to it's children.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 1
+        |> andThen (goToChild 1)
+
 -}
 goToChild : Int -> Zipper a -> Maybe (Zipper a)
-goToChild n ( Tree datum children, breadcrumbs ) =
+goToChild n ( Tree d c, breadcrumbs ) =
     let
         maybeSplit =
-            splitOnIndex n children
+            splitOnIndex n c
     in
-        case maybeSplit of
-            Nothing ->
-                Nothing
+    case maybeSplit of
+        Nothing ->
+            Nothing
 
-            Just ( before, focus, after ) ->
-                Just ( focus, (Context datum before after) :: breadcrumbs )
+        Just ( before, focus, after ) ->
+            Just ( focus, Context d before after :: breadcrumbs )
 
 
 {-| Move down and as far right as possible relative to the current Zipper focus.
 This allows navigation from a parent to it's last child.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -180,17 +179,18 @@ This allows navigation from a parent to it's last child.
             ]
 
     Just (simpleTree, [])
-        &> goToRightMostChild
+        |> andThen (goToRightMostChild)
+
 -}
 goToRightMostChild : Zipper a -> Maybe (Zipper a)
-goToRightMostChild ( Tree datum children, breadcrumbs ) =
-    goToChild ((List.length children) - 1) ( Tree datum children, breadcrumbs )
+goToRightMostChild ( Tree d c, breadcrumbs ) =
+    goToChild (List.length c - 1) ( Tree d c, breadcrumbs )
 
 
 {-| Move left relative to the current Zipper focus. This allows navigation from
 a child to it's previous sibling.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -200,8 +200,9 @@ a child to it's previous sibling.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 1
-        &> goLeft
+        |> andThen (goToChild 1)
+        |> andThen (goLeft)
+
 -}
 goLeft : Zipper a -> Maybe (Zipper a)
 goLeft ( tree, breadcrumbs ) =
@@ -209,19 +210,19 @@ goLeft ( tree, breadcrumbs ) =
         [] ->
             Nothing
 
-        (Context datum before after) :: bs ->
+        (Context d before after) :: bs ->
             case List.reverse before of
                 [] ->
                     Nothing
 
                 tree_ :: rest ->
-                    Just ( tree_, (Context datum (List.reverse rest) (tree :: after)) :: bs )
+                    Just ( tree_, Context d (List.reverse rest) (tree :: after) :: bs )
 
 
 {-| Move right relative to the current Zipper focus. This allows navigation from
 a child to it's next sibling.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -231,19 +232,20 @@ a child to it's next sibling.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 1
-        &> goRight
+        |> andThen (goToChild 1)
+        |> andThen (goRight)
+
 -}
 goRight : Zipper a -> Maybe (Zipper a)
 goRight ( tree, breadcrumbs ) =
     case breadcrumbs of
-        (Context datum before after) :: bs ->
+        (Context d before after) :: bs ->
             case after of
                 [] ->
                     Nothing
 
                 (Tree nextDatum nextChildren) :: rest ->
-                    Just ( (Tree nextDatum nextChildren), (Context datum (before ++ [ tree ]) rest) :: bs )
+                    Just ( Tree nextDatum nextChildren, Context d (before ++ [ tree ]) rest :: bs )
 
         [] ->
             Nothing
@@ -251,7 +253,7 @@ goRight ( tree, breadcrumbs ) =
 
 {-| Moves to the previous node in the hierarchy, depth-first.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -261,9 +263,10 @@ goRight ( tree, breadcrumbs ) =
             ]
 
     Just (simpleTree, [])
-        &> goToChild 2
-        &> goToPrevious
-        &> goToPrevious
+        |> andThen (goToChild 2)
+        |> andThen (goToPrevious)
+        |> andThen (goToPrevious)
+
 -}
 goToPrevious : Zipper a -> Maybe (Zipper a)
 goToPrevious zipper =
@@ -276,18 +279,18 @@ goToPrevious zipper =
                 Nothing ->
                     Just zipper_
     in
-        case goLeft zipper of
-            Just zipper_ ->
-                recurseDownAndRight zipper_
+    case goLeft zipper of
+        Just zipper_ ->
+            recurseDownAndRight zipper_
 
-            Nothing ->
-                goUp zipper
+        Nothing ->
+            goUp zipper
 
 
 {-| Moves to the next node in the hierarchy, depth-first. If already
-  at the end, stays there.
+at the end, stays there.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -297,47 +300,48 @@ goToPrevious zipper =
             ]
 
     Just (simpleTree, [])
-        &> goToNext
-        &> goToNext
+        |> andThen (goToNext)
+        |> andThen (goToNext)
+
 -}
 goToNext : Zipper a -> Maybe (Zipper a)
 goToNext zipper =
     let
-        upAndOver zipper =
-            case goUp zipper of
+        upAndOver z =
+            case goUp z of
                 Nothing ->
                     Nothing
 
-                Just zipper_ ->
-                    case goRight zipper_ of
+                Just z1 ->
+                    case goRight z1 of
                         Nothing ->
-                            upAndOver zipper_
+                            upAndOver z1
 
-                        zipper__ ->
-                            zipper__
+                        z2 ->
+                            z2
     in
-        case goToChild 0 zipper of
-            Just zipper_ ->
-                Just zipper_
+    case goToChild 0 zipper of
+        Just zipper_ ->
+            Just zipper_
 
-            Nothing ->
-                case goRight zipper of
-                    Just zipper_ ->
-                        Just zipper_
+        Nothing ->
+            case goRight zipper of
+                Just zipper_ ->
+                    Just zipper_
 
-                    Nothing ->
-                        case upAndOver zipper of
-                            Nothing ->
-                                Nothing
+                Nothing ->
+                    case upAndOver zipper of
+                        Nothing ->
+                            Nothing
 
-                            zipper_ ->
-                                zipper_
+                        zipper_ ->
+                            zipper_
 
 
 {-| Move to the root of the current Zipper focus. This allows navigation from
 any part of the tree back to the root.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -348,9 +352,10 @@ any part of the tree back to the root.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 0
-        &> goToChild 1
-        &> goToRoot
+        |> andThen (goToChild 0)
+        |> andThen (goToChild 1)
+        |> andThen (goToRoot)
+
 -}
 goToRoot : Zipper a -> Maybe (Zipper a)
 goToRoot ( tree, breadcrumbs ) =
@@ -365,7 +370,7 @@ goToRoot ( tree, breadcrumbs ) =
 {-| Move the focus to the first element for which the predicate is True. If no
 such element exists returns Nothing. Starts searching at the root of the tree.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -376,24 +381,26 @@ such element exists returns Nothing. Starts searching at the root of the tree.
             ]
 
     Just (simpleTree, [])
-        &> goTo (\elem -> elem == "e")
+        |> andThen (goTo (\elem -> elem == "e"))
+
 -}
 goTo : (a -> Bool) -> Zipper a -> Maybe (Zipper a)
 goTo predicate zipper =
     let
-        goToElementOrNext ( Tree datum children, breadcrumbs ) =
-            if predicate datum then
-                Just ( Tree datum children, breadcrumbs )
+        goToElementOrNext ( Tree d c, breadcrumbs ) =
+            if predicate d then
+                Just ( Tree d c, breadcrumbs )
+
             else
-                goToNext ( Tree datum children, breadcrumbs ) |> Maybe.andThen goToElementOrNext
+                goToNext ( Tree d c, breadcrumbs ) |> Maybe.andThen goToElementOrNext
     in
-        (goToRoot zipper) |> Maybe.andThen goToElementOrNext
+    goToRoot zipper |> Maybe.andThen goToElementOrNext
 
 
 {-| Update the datum at the current Zipper focus. This allows changes to be made
 to a part of a node's datum information, given the previous state of the node.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -404,20 +411,21 @@ to a part of a node's datum information, given the previous state of the node.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 0
-        &> updateDatum (\old -> old ++ "X") -- Appends an X to "b"
-        &> goToRoot
+        |> andThen (goToChild 0)
+        |> andThen (updateDatum (\old -> old ++ "X")) -- Appends an X to "b"
+        |> andThen (goToRoot)
+
 -}
 updateDatum : (a -> a) -> Zipper a -> Maybe (Zipper a)
-updateDatum fn ( Tree datum children, breadcrumbs ) =
-    Just ( Tree (fn datum) children, breadcrumbs )
+updateDatum fn ( Tree d c, breadcrumbs ) =
+    Just ( Tree (fn d) c, breadcrumbs )
 
 
 {-| Replace the datum at the current Zipper focus. This allows complete
 replacement of a node's datum information, ignoring the previous state of the
 node.
 
-    (&>) = flip Maybe.andThen
+    import Maybe exposing (andThen)
 
     simpleTree =
         Tree "a"
@@ -428,9 +436,10 @@ node.
             ]
 
     Just (simpleTree, [])
-        &> goToChild 0
-        &> replaceDatum "X" -- Replaces "b" with "X"
-        &> goToRoot
+        |> andThen (goToChild 0)
+        |> andThen (replaceDatum "X") -- Replaces "b" with "X"
+        |> andThen (goToRoot)
+
 -}
 replaceDatum : a -> Zipper a -> Maybe (Zipper a)
 replaceDatum newDatum =
@@ -440,8 +449,8 @@ replaceDatum newDatum =
 {-| Fully replace the children at the current Zipper focus.
 -}
 updateChildren : Forest a -> Zipper a -> Maybe (Zipper a)
-updateChildren newChildren ( Tree datum children, breadcrumbs ) =
-    Just ( Tree datum newChildren, breadcrumbs )
+updateChildren newChildren ( Tree d c, breadcrumbs ) =
+    Just ( Tree d newChildren, breadcrumbs )
 
 
 {-| Inserts a Tree as the first child of the Tree at the current focus. Does not move the focus.

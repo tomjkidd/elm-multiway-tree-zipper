@@ -1,29 +1,32 @@
-module Test.IndexedMapTests exposing (..)
+module Test.IndexedMapTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect exposing (Expectation)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
 
 
-tests : Test
-tests =
-    suite "IndexedMap"
+suite : Test
+suite =
+    describe "IndexedMap"
         [ test "Maps a function with index over the Tree, transforms Tree" <|
-            assertEqual (List.range 0 10)
-                (case MultiwayTree.indexedMap (\index c -> index) interestingTree of
-                    Just tree ->
-                        (MultiwayTree.flatten tree)
+            \_ ->
+                Expect.equal
+                    (List.range 0 10)
+                    (case MultiwayTree.indexedMap (\index c -> index) interestingTree of
+                        Just tree ->
+                            MultiwayTree.flatten tree
 
-                    Nothing ->
-                        []
-                )
+                        Nothing ->
+                            []
+                    )
         ]

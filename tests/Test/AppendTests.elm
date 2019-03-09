@@ -1,39 +1,41 @@
-module Test.AppendTests exposing (..)
+module Test.AppendTests exposing (suite)
 
-import Legacy.ElmTest as ElmTest exposing (..)
+import Expect exposing (Expectation)
+import Maybe exposing (andThen)
 import MultiwayTree exposing (Tree(..))
 import MultiwayTreeZipper exposing (..)
+import Test exposing (..)
 import Test.SampleData
     exposing
-        ( noChildTree
-        , singleChildTree
-        , multiChildTree
-        , deepTree
-        , noChildRecord
+        ( deepTree
         , interestingTree
+        , multiChildTree
+        , noChildRecord
+        , noChildTree
+        , singleChildTree
         )
-import Test.Utils exposing (..)
 
 
-tests : Test
-tests =
-    suite "Append"
+suite : Test
+suite =
+    describe "Append"
         [ test "appending children can turn a multiChildTree into an interestingTree" <|
-            assertEqual (Just ( interestingTree, [] ))
-                (Just ( multiChildTree, [] )
-                    &> goToChild
-                        0
-                    &> appendChild (Tree "e" [])
-                    &> goToChild 0
-                    &> appendChild (Tree "k" [])
-                    &> goUp
-                    &> goRight
-                    &> appendChild (Tree "f" [])
-                    &> appendChild (Tree "g" [])
-                    &> goRight
-                    &> appendChild (Tree "h" [])
-                    &> appendChild (Tree "i" [])
-                    &> appendChild (Tree "j" [])
-                    &> goToRoot
-                )
+            \_ ->
+                Expect.equal
+                    (Just ( interestingTree, [] ))
+                    (Just ( multiChildTree, [] )
+                        |> andThen (goToChild 0)
+                        |> andThen (appendChild (Tree "e" []))
+                        |> andThen (goToChild 0)
+                        |> andThen (appendChild (Tree "k" []))
+                        |> andThen goUp
+                        |> andThen goRight
+                        |> andThen (appendChild (Tree "f" []))
+                        |> andThen (appendChild (Tree "g" []))
+                        |> andThen goRight
+                        |> andThen (appendChild (Tree "h" []))
+                        |> andThen (appendChild (Tree "i" []))
+                        |> andThen (appendChild (Tree "j" []))
+                        |> andThen goToRoot
+                    )
         ]
