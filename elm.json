@@ -3,7 +3,7 @@
     "name": "tomjkidd/elm-multiway-tree-zipper",
     "summary": "A library for navigating and updating immutable trees.",
     "license": "BSD-3-Clause",
-    "version": "1.10.2",
+    "version": "1.10.3",
     "exposed-modules": [
         "MultiwayTree",
         "MultiwayTreeZipper"
